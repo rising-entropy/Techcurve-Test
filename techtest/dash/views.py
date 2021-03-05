@@ -51,21 +51,22 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     #authentication_classes = [TokenAuthentication]
     #permission_classes = [IsAuthenticated]
     
-class BankBalance(APIView):
+class ProfitLoss(APIView):
+    
     #authentication_classes = [TokenAuthentication]
     #permission_classes = [IsAuthenticated]
     
     def get(self, request):
-        bankBalanceValue = 0
+        profitLossValue = 0
         allExpenses = Expenses.objects.all()
         for i in allExpenses:
-            bankBalanceValue -= i.amount
+            profitLossValue -= i.amount
         allRevenues = Revenues.objects.all()
         for i in allRevenues:
-            bankBalanceValue += i.invoice.amount
+            profitLossValue += i.invoice.amount
         
         value = {
-            'bankBalance': bankBalanceValue
+            'profitOrLoss': profitLossValue
         }
         
         return JsonResponse(value)
@@ -117,34 +118,83 @@ class AllInvoices(generics.GenericAPIView, mixins.ListModelMixin):
         return self.list(request)
     
 
-@api_view(['GET'])
-def MonthlyRevenue(request, year, month):
+class MonthlyRevenue(APIView):
     
-    try:
-        article = Revenues.objects.all().filter()
-        article2 = []
-        for i in article:
-            if i.dateReceived.month == month and i.dateReceived.year == year:
-                article2.append(i)
-        monthlyRev = []
-        c=1
-        for i in article2:
-            letsHaveAJSON = {}
-            letsHaveAJSON["id"] = i.id
-            letsHaveAJSON["dateReceived"] = i.dateReceived
-            letsHaveAJSON["customerName"] = i.invoice.customerName
-            letsHaveAJSON["invoiceNumber"] = i.invoice.invoiceNumber
-            letsHaveAJSON["amount"] = i.invoice.amount
-            letsHaveAJSON["invoiceDate"] = i.invoice.invoiceDate
-            letsHaveAJSON["paymentDate"] = i.invoice.paymentDate
-            letsHaveAJSON["state"] = i.invoice.state
-            monthlyRev.append(letsHaveAJSON)
-            c += 1 
-            
-    except Revenues.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
     
-    if request.method == 'GET':
-        return JsonResponse(monthlyRev, safe=False)
-        #serializer = RevenuesSerializer(article2, many=True)
-        #return Response(serializer.data)
+    def get(self, request, year, month):
+        try:
+            article = Revenues.objects.all().filter()
+            article2 = []
+            for i in article:
+                if i.dateReceived.month == month and i.dateReceived.year == year:
+                    article2.append(i)
+            monthlyRev = []
+            c=1
+            for i in article2:
+                letsHaveAJSON = {}
+                letsHaveAJSON["id"] = i.id
+                letsHaveAJSON["dateReceived"] = i.dateReceived
+                letsHaveAJSON["customerName"] = i.invoice.customerName
+                letsHaveAJSON["invoiceNumber"] = i.invoice.invoiceNumber
+                letsHaveAJSON["amount"] = i.invoice.amount
+                letsHaveAJSON["invoiceDate"] = i.invoice.invoiceDate
+                letsHaveAJSON["paymentDate"] = i.invoice.paymentDate
+                letsHaveAJSON["state"] = i.invoice.state
+                monthlyRev.append(letsHaveAJSON)
+                c += 1         
+        except Revenues.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        return Response(monthlyRev)
+
+class MonthlyPLSummary(APIView):
+    
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        try:
+            #all Months ke revenues
+            article = Revenues.objects.all()
+            article2 = {}
+            for i in article:
+                thatYear = i.dateReceived.year
+                thatMonth = i.dateReceived.month
+                thatCombo = tuple([thatYear, thatMonth])
+                if thatCombo not in article2.keys():
+                    article2[thatCombo] = []
+                    article2[thatCombo].append(i.invoice.amount)
+                else:
+                    article2[thatCombo][0] += i.invoice.amount
+            for i in article2.values():
+                i.append(0)
+            article = Expenses.objects.all()
+            for i in article:
+                thatYear = i.date.year
+                thatMonth = i.date.month
+                thatCombo = tuple([thatYear, thatMonth])
+                if thatCombo not in article2.keys():
+                    article2[thatCombo] = []
+                    article2[thatCombo].append(0)
+                    article2[thatCombo].append(i.amount)
+                else:
+                    article2[thatCombo][1] += i.amount
+            monthlyRev = []
+            c = 1
+            for k, v in article2.items():
+                lemmeGetThatJson = {
+                    'id': c,
+                    'year': k[0],
+                    'month': k[1],
+                    'revenue': v[0],
+                    'expense': v[1],
+                    'profit': v[0] - v[1]
+                }
+                c+=1
+                monthlyRev.append(lemmeGetThatJson)
+        except Revenues.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        return Response(monthlyRev)
