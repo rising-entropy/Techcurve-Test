@@ -17,6 +17,9 @@ class Invoice(models.Model):
     # True -> paid, False -> due
     state = models.BooleanField(default=False)
     
+    def __str__(self):
+        return self.customerName + " " + self.invoiceNumber
+    
 class Revenues(models.Model):
     invoice = models.OneToOneField(Invoice, on_delete=models.CASCADE)
     dateReceived = models.DateField()

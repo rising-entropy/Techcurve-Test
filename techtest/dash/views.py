@@ -2,13 +2,11 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from knox.models import AuthToken
 from .serializers import UserSerializer
-# Create your views here.
 from django.contrib.auth import login
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
-
 from django.shortcuts import render
 from .models import *
 from .serializers import *
@@ -22,6 +20,7 @@ from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
+from django.views.generic.base import View
 
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
@@ -36,18 +35,39 @@ class LoginAPI(KnoxLoginView):
 class RevenuesViewSet(viewsets.ModelViewSet):
     serializer_class = RevenuesSerializer
     queryset = Revenues.objects.all()
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
     
 class ExpensesViewSet(viewsets.ModelViewSet):
     serializer_class = ExpensesSerializer
     queryset = Expenses.objects.all()
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
     
 class InvoiceViewSet(viewsets.ModelViewSet):
     serializer_class = InvoiceSerializer
     queryset = Invoice.objects.all()
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    
+class BankBalance(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        bankBalanceValue = 0
+        allExpenses = Expenses.objects.all()
+        for i in allExpenses:
+            bankBalanceValue -= i.amount
+        allRevenues = Revenues.objects.all()
+        for i in allRevenues:
+            bankBalanceValue += i.invoice.amount
+        
+        value = {
+            'bankBalance': bankBalanceValue
+        }
+        
+        return JsonResponse(value)
+    
+        
     
