@@ -115,3 +115,36 @@ class AllInvoices(generics.GenericAPIView, mixins.ListModelMixin):
     
     def get(self, request):
         return self.list(request)
+    
+
+@api_view(['GET'])
+def MonthlyRevenue(request, year, month):
+    
+    try:
+        article = Revenues.objects.all().filter()
+        article2 = []
+        for i in article:
+            if i.dateReceived.month == month and i.dateReceived.year == year:
+                article2.append(i)
+        monthlyRev = []
+        c=1
+        for i in article2:
+            letsHaveAJSON = {}
+            letsHaveAJSON["id"] = i.id
+            letsHaveAJSON["dateReceived"] = i.dateReceived
+            letsHaveAJSON["customerName"] = i.invoice.customerName
+            letsHaveAJSON["invoiceNumber"] = i.invoice.invoiceNumber
+            letsHaveAJSON["amount"] = i.invoice.amount
+            letsHaveAJSON["invoiceDate"] = i.invoice.invoiceDate
+            letsHaveAJSON["paymentDate"] = i.invoice.paymentDate
+            letsHaveAJSON["state"] = i.invoice.state
+            monthlyRev.append(letsHaveAJSON)
+            c += 1 
+            
+    except Revenues.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        return JsonResponse(monthlyRev, safe=False)
+        #serializer = RevenuesSerializer(article2, many=True)
+        #return Response(serializer.data)

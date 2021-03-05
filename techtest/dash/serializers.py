@@ -16,7 +16,7 @@ class ExpensesSerializer(serializers.ModelSerializer):
 class RevenuesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Revenues
-        fields = "__all__"
+        fields = ('id', 'invoice', 'dateReceived')
         
 class InvoiceSerializer(serializers.ModelSerializer):
     class Meta:
