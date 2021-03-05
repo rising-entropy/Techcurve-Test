@@ -7,6 +7,7 @@ from django.contrib.auth import login
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
+from knox.auth import TokenAuthentication
 
 from django.shortcuts import render
 from .models import *
@@ -18,7 +19,6 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework import mixins
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
@@ -36,12 +36,18 @@ class LoginAPI(KnoxLoginView):
 class RevenuesViewSet(viewsets.ModelViewSet):
     serializer_class = RevenuesSerializer
     queryset = Revenues.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
 class ExpensesViewSet(viewsets.ModelViewSet):
     serializer_class = ExpensesSerializer
     queryset = Expenses.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
 class InvoiceViewSet(viewsets.ModelViewSet):
     serializer_class = InvoiceSerializer
     queryset = Invoice.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
