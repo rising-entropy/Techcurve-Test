@@ -12,12 +12,17 @@ router2.register('expenses', ExpensesViewSet, basename='expenses')
 router3 = DefaultRouter()
 router3.register('invoice', InvoiceViewSet, basename='invoice')
 
+router4 = DefaultRouter()
+router4.register('bankbalance', BankBalanceViewSet, basename='bankbalance')
+
 urlpatterns = [
     path('viewset/', include(router.urls)),
     path('viewset/', include(router2.urls)),
     path('viewset/', include(router3.urls)),
+    path('viewset/', include(router4.urls)),
     path('api/login/', LoginAPI.as_view(), name='login'),
     path('api/profitloss/', ProfitLoss.as_view(), name='ProfitLoss'),
+    path('api/currentbankbalance/', CurrentBankBalance.as_view(), name='CurrentBankBalance'),
     path('api/monthlyplsummary/', MonthlyPLSummary.as_view(), name='MonthlyPLSummary'),
     path('api/expense/', Expense.as_view(), name='Expense'),
     path('api/revenue/', Revenue.as_view(), name='Revenue'),

@@ -23,3 +23,6 @@ class Invoice(models.Model):
 class Revenues(models.Model):
     invoice = models.OneToOneField(Invoice, on_delete=models.CASCADE)
     dateReceived = models.DateField()
+    
+class BankBalance(models.Model):
+    amount = models.IntegerField()

@@ -51,6 +51,12 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     #authentication_classes = [TokenAuthentication]
     #permission_classes = [IsAuthenticated]
     
+class BankBalanceViewSet(viewsets.ModelViewSet):
+    serializer_class = BankBalanceSerializer
+    queryset = BankBalance.objects.all()
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    
 class ProfitLoss(APIView):
     
     #authentication_classes = [TokenAuthentication]
@@ -198,3 +204,16 @@ class MonthlyPLSummary(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         return Response(monthlyRev)
+    
+class CurrentBankBalance(APIView):
+    
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        article = BankBalance.objects.all().order_by('-id').first()
+        article = {
+            'id': article.id,
+            'amount': article.amount,
+        }
+        return Response(article)

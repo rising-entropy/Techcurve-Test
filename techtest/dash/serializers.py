@@ -22,3 +22,8 @@ class InvoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invoice
         fields = "__all__"
+        
+class BankBalanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BankBalance
+        fields = "__all__"
