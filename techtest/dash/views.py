@@ -217,3 +217,43 @@ class CurrentBankBalance(APIView):
             'amount': article.amount,
         }
         return Response(article)
+    
+class MonthlyExpensesSummary(APIView):
+    
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        article = Expenses.objects.all().order_by('-date')
+        article2 = {}
+        for i in article:
+            thatYear = i.date.year
+            thatMonth = i.date.month
+            thatCombo = tuple([thatYear, thatMonth])
+            # 0 -> salary 1-> notSalary
+            if thatCombo not in article2.keys():
+                article2[thatCombo] = [] 
+                article2[thatCombo].append(0)
+                article2[thatCombo].append(0)
+            if i.isBOIsalary:
+                article2[thatCombo][0] += i.amount
+            else:
+                article2[thatCombo][1] += i.amount
+        monthlyExpenses = []
+        c=1
+        for k, v in article2.items():
+            thatJson = {
+                'id': c,
+                'year': k[0],
+                'month': k[1],
+                'boiSalary': v[0],
+                'notBoiSalary': v[1],
+                'amount': v[0]+v[1],
+            }
+            monthlyExpenses.append(thatJson)
+            c+=1
+        return Response(monthlyExpenses)
+                    
+        
+        
+        

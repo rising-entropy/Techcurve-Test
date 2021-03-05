@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/login/', LoginAPI.as_view(), name='login'),
     path('api/profitloss/', ProfitLoss.as_view(), name='ProfitLoss'),
     path('api/currentbankbalance/', CurrentBankBalance.as_view(), name='CurrentBankBalance'),
+    path('api/monthlyexpensesummary/', MonthlyExpensesSummary.as_view(), name='MonthlyExpensesSummary'),
     path('api/monthlyplsummary/', MonthlyPLSummary.as_view(), name='MonthlyPLSummary'),
     path('api/expense/', Expense.as_view(), name='Expense'),
     path('api/revenue/', Revenue.as_view(), name='Revenue'),
