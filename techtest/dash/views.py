@@ -21,6 +21,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
+import json
 
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
@@ -51,8 +52,8 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     #permission_classes = [IsAuthenticated]
     
 class BankBalance(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
     
     def get(self, request):
         bankBalanceValue = 0
@@ -69,5 +70,48 @@ class BankBalance(APIView):
         
         return JsonResponse(value)
     
-        
+class Revenue(APIView):
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
     
+    def get(self, request):
+        totalRevenue = 0
+        
+        allRevenues = Revenues.objects.all()
+        for i in allRevenues:
+            totalRevenue += i.invoice.amount
+            
+        value = {
+            'totalRevenue': totalRevenue
+        }
+        
+        return JsonResponse(value)
+    
+class Expense(APIView):
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        totalExpense = 0
+        
+        allExpenses = Expenses.objects.all()
+        for i in allExpenses:
+            totalExpense += i.amount
+            
+        value = {
+            'totalExpense': totalExpense
+        }
+        
+        return JsonResponse(value)
+    
+    
+class AllInvoices(generics.GenericAPIView, mixins.ListModelMixin):
+    
+    serializer_class = InvoiceSerializer
+    queryset = Invoice.objects.all()
+    
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        return self.list(request)

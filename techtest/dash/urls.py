@@ -18,6 +18,9 @@ urlpatterns = [
     path('viewset/', include(router3.urls)),
     path('api/login/', LoginAPI.as_view(), name='login'),
     path('api/bankbalance/', BankBalance.as_view(), name='BankBalance'),
+    path('api/expense/', Expense.as_view(), name='Expense'),
+    path('api/revenue/', Revenue.as_view(), name='Revenue'),
+    path('api/invoices/', AllInvoices.as_view(), name='AllInvoices'),
     path('api/logout/', knox_views.LogoutView.as_view(), name='logout'),
     #path('api/logoutall/', knox_views.LogoutAllView.as_view(), name='logoutall'),
 ]
