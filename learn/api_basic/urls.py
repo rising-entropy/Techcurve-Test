@@ -7,6 +7,7 @@ router = DefaultRouter()
 router.register('article', GenericViewSetOP, basename='article')
 
 urlpatterns = [
+    
     path('viewset/', include(router.urls)),
     path('viewset/<int:pk>', include(router.urls)),
     #path('article/', article_list),
