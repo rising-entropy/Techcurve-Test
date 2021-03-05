@@ -22,6 +22,7 @@ from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
 import json
+from datetime import date
 
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
@@ -254,6 +255,82 @@ class MonthlyExpensesSummary(APIView):
             c+=1
         return Response(monthlyExpenses)
                     
+def getLast12Months():
+    today = date.today()
+    todayMonth = today.month
+    todayYear = today.year
+    c = 0
+    lst = []
+    while(c<12):
+        lst.append((todayYear, todayMonth))
+        if todayMonth == 1:
+            todayYear -= 1
+            todayMonth = 12
+        else:
+            todayMonth -= 1
+        c += 1
+    return lst
+     
+                    
+class ProfitLossGraph(APIView):
+    
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        try:
+            #all Months ke revenues
+            article = Revenues.objects.all()
+            article2 = {}
+            for i in article:
+                thatYear = i.dateReceived.year
+                thatMonth = i.dateReceived.month
+                thatCombo = tuple([thatYear, thatMonth])
+                if thatCombo not in article2.keys():
+                    article2[thatCombo] = []
+                    article2[thatCombo].append(i.invoice.amount)
+                else:
+                    article2[thatCombo][0] += i.invoice.amount
+            for i in article2.values():
+                i.append(0)
+            article = Expenses.objects.all()
+            for i in article:
+                thatYear = i.date.year
+                thatMonth = i.date.month
+                thatCombo = tuple([thatYear, thatMonth])
+                if thatCombo not in article2.keys():
+                    article2[thatCombo] = []
+                    article2[thatCombo].append(0)
+                    article2[thatCombo].append(i.amount)
+                else:
+                    article2[thatCombo][1] += i.amount
+            
+            monthlyRev = []
+            c = 1
+                    
+            thoseDates = getLast12Months()
+            for i in thoseDates:
+                if i not in article2.keys():
+                    thatJson = {
+                        'id': c,
+                        'year': i[0],
+                        'month': i[1],
+                        'revenue': 0,
+                        'expense': 0,
+                        'profit': 0
+                    }
+                else:
+                    thatJson = {
+                        'id': c,
+                        'year': i[0],
+                        'month': i[1],
+                        'revenue': article2[i][0],
+                        'expense': article2[i][1],
+                        'profit': article2[i][0] - article2[i][1]
+                    }
+                monthlyRev.append(thatJson)         
+                c+=1
+        except Revenues.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         
-        
-        
+        return Response(monthlyRev)

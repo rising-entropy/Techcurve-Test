@@ -25,10 +25,10 @@ urlpatterns = [
     path('api/currentbankbalance/', CurrentBankBalance.as_view(), name='CurrentBankBalance'),
     path('api/monthlyexpensesummary/', MonthlyExpensesSummary.as_view(), name='MonthlyExpensesSummary'),
     path('api/monthlyplsummary/', MonthlyPLSummary.as_view(), name='MonthlyPLSummary'),
+    path('api/profitlossgraph/', ProfitLossGraph.as_view(), name='ProfitLossGraph'),
     path('api/expense/', Expense.as_view(), name='Expense'),
     path('api/revenue/', Revenue.as_view(), name='Revenue'),
     path('api/invoices/', AllInvoices.as_view(), name='AllInvoices'),
     path('api/monthlyrevenue/<int:year>/<int:month>', MonthlyRevenue.as_view(), name='MonthlyRevenue'),
     path('api/logout/', knox_views.LogoutView.as_view(), name='logout'),
-    #path('api/logoutall/', knox_views.LogoutAllView.as_view(), name='logoutall'),
 ]
