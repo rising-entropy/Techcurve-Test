@@ -16,6 +16,14 @@ In the directory on level of manage.py<br>
 <code>api/login/</code> For Login, Returns the Token (We are using Knox Authentication.)<br>
 <code>api/logout/</code> For Logout.
 
+###### You may use the following for the Login:
+`{
+    "username": "riyad.mahrez",
+    "password": "admin@310"
+}`
+
+###### `GET /admin/` credentials: `admin` and `admin`. 
+
 ##### For every API henceforth (also the Logout, we'd be sharing a Header as Key: Authorization, Value: Token {{token}} ).
 
 <hr>
