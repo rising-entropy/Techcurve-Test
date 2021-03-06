@@ -37,31 +37,31 @@ class LoginAPI(KnoxLoginView):
 class RevenuesViewSet(viewsets.ModelViewSet):
     serializer_class = RevenuesSerializer
     queryset = Revenues.objects.all()
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
 class ExpensesViewSet(viewsets.ModelViewSet):
     serializer_class = ExpensesSerializer
     queryset = Expenses.objects.all()
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
 class InvoiceViewSet(viewsets.ModelViewSet):
     serializer_class = InvoiceSerializer
     queryset = Invoice.objects.all()
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
 class BankBalanceViewSet(viewsets.ModelViewSet):
     serializer_class = BankBalanceSerializer
     queryset = BankBalance.objects.all()
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
 class ProfitLoss(APIView):
     
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         profitLossValue = 0
@@ -79,8 +79,8 @@ class ProfitLoss(APIView):
         return JsonResponse(value)
     
 class Revenue(APIView):
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         totalRevenue = 0
@@ -96,8 +96,8 @@ class Revenue(APIView):
         return JsonResponse(value)
     
 class Expense(APIView):
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         totalExpense = 0
@@ -118,8 +118,8 @@ class AllInvoices(generics.GenericAPIView, mixins.ListModelMixin):
     serializer_class = InvoiceSerializer
     queryset = Invoice.objects.all()
     
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         return self.list(request)
@@ -127,8 +127,8 @@ class AllInvoices(generics.GenericAPIView, mixins.ListModelMixin):
 
 class MonthlyRevenue(APIView):
     
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, year, month):
         try:
@@ -158,8 +158,8 @@ class MonthlyRevenue(APIView):
 
 class MonthlyPLSummary(APIView):
     
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         try:
@@ -208,8 +208,8 @@ class MonthlyPLSummary(APIView):
     
 class CurrentBankBalance(APIView):
     
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         article = BankBalance.objects.all().order_by('-id').first()
@@ -221,8 +221,8 @@ class CurrentBankBalance(APIView):
     
 class MonthlyExpensesSummary(APIView):
     
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         article = Expenses.objects.all().order_by('-date')
@@ -274,8 +274,8 @@ def getLast12Months():
                     
 class ProfitLossGraph(APIView):
     
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         try:
@@ -334,3 +334,30 @@ class ProfitLossGraph(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         return Response(monthlyRev)
+    
+class RevenueByMonth(APIView):
+    
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    
+    def get(self, request, year, month):
+        try:
+            #all Months ke revenues
+            article = Revenues.objects.all()
+            article2 = {}
+            for i in article:
+                thatYear = i.dateReceived.year
+                thatMonth = i.dateReceived.month
+                thatCombo = tuple([thatYear, thatMonth])
+                if thatCombo not in article2.keys():
+                    article2[thatCombo] = []
+                    article2[thatCombo].append(i.invoice.amount)
+                else:
+                    article2[thatCombo][0] += i.invoice.amount
+            print(article2)
+            if tuple([year, month]) not in article2.keys():
+                return Response({"revenue": 0})
+            else:
+                return Response({"revenue": article2[tuple([year, month])][0]})
+        except Revenues.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

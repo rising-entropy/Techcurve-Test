@@ -31,4 +31,7 @@ urlpatterns = [
     path('api/invoices/', AllInvoices.as_view(), name='AllInvoices'),
     path('api/monthlyrevenue/<int:year>/<int:month>', MonthlyRevenue.as_view(), name='MonthlyRevenue'),
     path('api/logout/', knox_views.LogoutView.as_view(), name='logout'),
+    path('api/revenuebymonth/<int:year>/<int:month>', RevenueByMonth.as_view(), name='RevenueByMonth'),
+    #path('api/expensebymonth/<int:year>/<int:month>', knox_views.ExpenseByMonth.as_view(), name='ExpenseByMonth'),
+    #path('api/profitlossbymonth/<int:year>/<int:month>', knox_views.PLByMonth.as_view(), name='PLByMonth'),
 ]
