@@ -28,3 +28,22 @@ Similar Schema would be used for `expenses`, `bankbalance` and `invoice` as;
 - `viewset/bankbalance/`
 - `viewset/invoice/`
 
+### Required Custom APIs:
+
+###### Get the Latest Bank Balance
+`GET api/currentbankbalance/`
+
+###### Get the Current Profit-Loss
+`GET api/profitloss/`
+
+###### Get Total Expenses
+`GET api/expense/`
+
+###### Get Total Revenue
+`GET api/revenue/`
+
+###### Get Profit Loss Data for past 12 Months for the Graph.
+`GET api/profitlossgraph/`
+
+###### Get Profit Loss Data for past 12 Months for the Graph.
+`GET api/profitlossgraph/`
