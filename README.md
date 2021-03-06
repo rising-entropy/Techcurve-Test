@@ -41,31 +41,31 @@ Similar Schema would be used for `expenses`, `bankbalance` and `invoice` as;
 ### Required Custom APIs:
 
 ##### Get the Latest Bank Balance
-`GET api/currentbankbalance/`
+- `GET api/currentbankbalance/`
 
 ##### Get the Current Profit-Loss
-`GET api/profitloss/`
+- `GET api/profitloss/`
 
 ##### Get Total Expenses
-`GET api/expense/`
+- `GET api/expense/`
 
 ##### Get Total Revenue
-`GET api/revenue/`
+- `GET api/revenue/`
 
 ##### Get Profit Loss Data for past 12 Months for the Graph.
-`GET api/profitlossgraph/`
+- `GET api/profitlossgraph/`
 
 ##### Get Monthly Profit-Loss Summary.
-`GET api/monthlyplsummary/`
+- `GET api/monthlyplsummary/`
 
 ##### Get Monthly Expenses Summary.
-`GET api/monthlyexpensesummary/`
+- `GET api/monthlyexpensesummary/`
 
 ##### Get All Invoices.
-`GET api/invoices/`
+- `GET api/invoices/`
 
 ##### Get Monthly Revenue.
-`GET api/monthlyrevenue/<int:year>/<int:month>`
+- `GET api/monthlyrevenue/<int:year>/<int:month>`
 
 <hr>
 <i>Do reach out for any issues. Thanks!</i>
