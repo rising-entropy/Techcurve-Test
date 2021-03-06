@@ -75,5 +75,14 @@ Similar Schema would be used for `expenses`, `bankbalance` and `invoice` as;
 ##### Get Monthly Revenue.
 - `GET api/monthlyrevenue/<int:year>/<int:month>`
 
+##### Get Revenue By Month.
+- `GET api/revenuebymonth/<int:year>/<int:month>`
+
+##### Get Expense By Month.
+- `GET api/expensebymonth/<int:year>/<int:month>`
+
+##### Get Profit/Loss By Month.
+- `GET api/profitlossbymonth/<int:year>/<int:month>`
+
 <hr>
 <i>Do reach out for any issues. Thanks!</i>
